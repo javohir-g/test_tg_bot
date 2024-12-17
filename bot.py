@@ -4,10 +4,23 @@ from poll_test import create_poll
 from questions_list import questions
 from buttons import *
 
+
+from keep_alive import keep_alive
+keep_alive()
+
+from request_to_site import schedule_updater
+from threading import Thread
+updater_thread = Thread(target=schedule_updater)
+updater_thread.daemon = True
+updater_thread.start()
+
+
+
 bot = telebot.TeleBot(token=os.environ.get('token'))
+#bot = telebot.TeleBot(BOT_TOKEN, parse_mode="HTML")
 
+user_data = {}
 users = {}
-
 #---------------registration-------------------
 @bot.message_handler(commands=['start'])
 def start(message):
