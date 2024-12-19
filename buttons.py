@@ -4,8 +4,10 @@ def menu():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     button1 = KeyboardButton("📚 Банк тестов")
     button2 = KeyboardButton("✅ Пробный экзамен")
+    button4 = KeyboardButton("📖 Учебные материалы")
     button3 = KeyboardButton("📝 Rus tili kursiga yozilish")
     markup.add(button1, button2)
+    markup.add(button4)
     markup.add(button3)
     return markup
 

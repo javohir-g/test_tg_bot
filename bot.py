@@ -55,6 +55,17 @@ def contact_handler(message, name):
 
         bot.register_next_step_handler(message, test_base, name)
 
+@bot.message_handler(func=lambda message: message.text == "📖 Учебные материалы")
+def test_base1(message):
+    folder_path = "books"
+    pdf_files = [f for f in os.listdir(folder_path) if f.endswith('.pdf')]
+    for pdf_file in pdf_files:
+        file_path = os.path.join(folder_path, pdf_file)
+        with open(file_path, 'rb') as file:
+            bot.send_document(message.chat.id, file)
+
+    bot.reply_to(message, "Все доступные учебные материалы отправлены.")
+
 #---------------Банк тестов-------------------
 def test_base(message):
     user_id = message.from_user.id

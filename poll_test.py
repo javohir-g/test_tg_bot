@@ -1,6 +1,6 @@
 import telebot
 from pyexpat.errors import messages
-from buttons import menu_test, exit_button
+from buttons import menu, exit_button
 
 
 # Функция для создания и отправки опросов
