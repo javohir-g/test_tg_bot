@@ -1,10 +1,11 @@
 import telebot
+from pyexpat.errors import messages
 from buttons import menu_test
 # Функция для создания и отправки опросов
-def create_poll(bot, user_id, questions, user_data, send_result=True):
-    question_index = user_data[user_id]["current_question"]
+def create_poll(bot, user_id, questions, users, send_result=True):
+    question_index = users[user_id]["current_question"]
     if question_index >= len(questions):
-        finish_test(bot, user_id, user_data, len(questions), send_result)
+        finish_test(bot, user_id, users, len(questions), send_result)
         return
 
     question_data = questions[question_index]
@@ -33,12 +34,12 @@ def create_poll(bot, user_id, questions, user_data, send_result=True):
     )
 
 # Обработка ответов на викторину
-def handle_poll_answer(bot, answer, user_data, questions, send_result=True):
+def handle_poll_answer(bot, answer, users, questions, send_result=True):
     user_id = answer.user.id
-    if user_id not in user_data or "current_question" not in user_data[user_id]:
+    if user_id not in users or "current_question" not in users[user_id]:
         return
 
-    question_index = user_data[user_id]["current_question"]
+    question_index = users[user_id]["current_question"]
     question_data = questions[question_index]
     correct_answer = question_data["correct"]
 
@@ -48,18 +49,18 @@ def handle_poll_answer(bot, answer, user_data, questions, send_result=True):
 
     # Проверяем, правильный ли ответ
     if selected_option == correct_answer:
-        user_data[user_id]["score"] += 1
+        users[user_id]["score"] += 1
 
     # Переход к следующему вопросу
-    user_data[user_id]["current_question"] += 1
-    create_poll(bot, user_id, questions, user_data, send_result)
+    users[user_id]["current_question"] += 1
+    create_poll(bot, user_id, questions, users, send_result)
 
 # Завершение теста и возврат в меню
-def finish_test(bot, user_id, user_data, total_questions, send_result):
-    score = user_data[user_id]["score"]
+def finish_test(bot, user_id, users, total_questions, send_result):
+    score = users[user_id]["score"]
     if send_result:
         bot.send_message(user_id, f"Тест завершён! Ваш результат: {score}/{total_questions}.")
-    del user_data[user_id]
+    users[user_id] = {"score": 0, "current_question": 0}
 
     # Возвращаемся к выбору теста
     bot.send_message(user_id, "Выберите тест", reply_markup=menu_test())

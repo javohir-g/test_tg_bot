@@ -37,6 +37,17 @@ def phone_button_uz():
     markup.add(button_phone)
     return markup
 
+def exam_btns():
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    button1 = KeyboardButton("Вариант 1")
+    button2 = KeyboardButton("Вариант 2")
+    button3 = KeyboardButton("Вариант 3")
+    button4 = KeyboardButton("Вариант 4")
+    button5 = KeyboardButton("⬅️ Назад")
+    markup.add(button1, button2)
+    markup.add(button3, button4)
+    markup.add(button5)
+    return markup
 
 
 
