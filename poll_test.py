@@ -64,4 +64,4 @@ def finish_test(bot, user_id, users, total_questions, send_result):
     users[user_id] = {"score": 0, "current_question": 0}
 
     # Возвращаемся к выбору теста
-    bot.send_message(user_id, "Выберите тест", reply_markup=menu_test())
+    bot.send_message(user_id, "Выберите тест", reply_markup=menu())
