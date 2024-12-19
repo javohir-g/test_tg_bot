@@ -1,6 +1,8 @@
 import telebot
 from pyexpat.errors import messages
-from buttons import menu_test
+from buttons import menu_test, exit_button
+
+
 # Функция для создания и отправки опросов
 def create_poll(bot, user_id, questions, users, send_result=True):
     question_index = users[user_id]["current_question"]
@@ -30,7 +32,7 @@ def create_poll(bot, user_id, questions, users, send_result=True):
         correct_option_id=correct_option_index,
         is_anonymous=False,
         allows_multiple_answers=False,
-        type='quiz'
+        type='quiz', reply_markup=exit_button()
     )
 
 # Обработка ответов на викторину

@@ -49,8 +49,11 @@ def exam_btns():
     markup.add(button5)
     return markup
 
-
-
+def exit_button():
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    button1 =KeyboardButton("Главное меню")
+    markup.add(button1)
+    return markup
 
 
 def create_inline_keyboard_with_feedback(options, correct_answer=None, selected_option=None):

@@ -121,6 +121,7 @@ def poll_answer_handler(answer):
     if user_id in users:
         if users[user_id]["current_question"] < len(user_test):  # Если ещё есть вопросы
             handle_poll_answer(bot, answer, users, user_test, send_result=False)
+
         else:
             bot.send_message(user_id, "Тест завершён. Возвращаем вас в меню.", reply_markup=menu())
 
@@ -171,6 +172,10 @@ def poll_test_answer_handler(answer):
         else:
             bot.send_message(user_id, "Тест завершён. Возвращаем вас в меню.", reply_markup=menu())
 
+@bot.message_handler(func=lambda message: message.text == "Главное меню")
+def main_menu(message):
+    user_id = message.from_user.id
+    bot.send_message(user_id, "Главное меню", reply_markup=menu())
 
 
 bot.polling(non_stop=True)
