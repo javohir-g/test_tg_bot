@@ -60,8 +60,7 @@ def handle_poll_answer(bot, answer, users, questions, send_result=True):
 # Завершение теста и возврат в меню
 def finish_test(bot, user_id, users, total_questions, send_result):
     score = users[user_id]["score"]
-    if send_result:
-        bot.send_message(user_id, f"Тест завершён! Ваш результат: {score}/{total_questions}.")
+    bot.send_message(user_id, f"Тест завершён! Ваш результат: {score}/{total_questions}.")
     users[user_id] = {"score": 0, "current_question": 0}
 
     # Возвращаемся к выбору теста

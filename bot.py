@@ -77,11 +77,11 @@ def test_type(message):
     elif message.text == "🏛 История":
         bot.send_message(user_id, "История")
         user_test = history_quest
-        create_poll(bot, user_id, history_quest, users, send_result=False)
+        create_poll(bot, user_id, history_quest, users, send_result=True)
     elif message.text == "⚖️ Законодательство":
         bot.send_message(user_id, "Законодательство")
         user_test = law_quest
-        create_poll(bot, user_id, law_quest, users, send_result=False)
+        create_poll(bot, user_id, law_quest, users, send_result=True)
     elif message.text == "⬅️ Назад":
         bot.send_message(user_id, "Выберите тест", reply_markup=menu())
 
@@ -98,19 +98,19 @@ def test_ru(message):
 
     if message.text == "🎧 Аудирование":
         user_test = listening
-        create_poll(bot, user_id, listening, users, send_result=False)
+        create_poll(bot, user_id, listening, users, send_result=True)
 
     elif message.text == "📖 Чтение":
         user_test = reading
-        create_poll(bot, user_id, reading, users, send_result=False)
+        create_poll(bot, user_id, reading, users, send_result=True)
 
     elif message.text == "✍️ Письмо":
         user_test = writing
-        create_poll(bot, user_id, writing, users, send_result=False)
+        create_poll(bot, user_id, writing, users, send_result=True)
 
     elif message.text == "📘 Лексика и грамматика":
         user_test = questions
-        create_poll(bot, user_id, questions, users, send_result=False)
+        create_poll(bot, user_id, questions, users, send_result=True)
 
     elif message.text == "⬅️ Назад.":
         bot.send_message(user_id, "Выберите тест", reply_markup=menu_test())
@@ -120,7 +120,7 @@ def poll_answer_handler(answer):
     user_id = answer.user.id
     if user_id in users:
         if users[user_id]["current_question"] < len(user_test):  # Если ещё есть вопросы
-            handle_poll_answer(bot, answer, users, user_test, send_result=False)
+            handle_poll_answer(bot, answer, users, user_test, send_result=True)
 
         else:
             bot.send_message(user_id, "Тест завершён. Возвращаем вас в меню.", reply_markup=menu())
@@ -133,7 +133,7 @@ def mock_test(message):
     bot.register_next_step_handler(message, test_optons)
 
 
-@bot.message_handler(func=lambda message: message.text in ["Вариант 1", "Вариан 2", "Вариант 3", "Вариан 4", "⬅️ Назад"])
+@bot.message_handler(func=lambda message: message.text in ["Вариант 1", "Вариант 2", "Вариант 3", "Вариант 4", "Вариант 5" "⬅️ Назад"])
 def test_optons(message):
     global user_test
     user_id = message.from_user.id
@@ -159,6 +159,10 @@ def test_optons(message):
     elif message.text == "Вариант 4":
         user_test = option4
         create_poll(bot, user_id, option4, users, send_result=True)
+
+    elif message.text == "Вариант 5":
+        user_test = option5
+        create_poll(bot, user_id, option5, users, send_result=True)
 
     elif message.text == "⬅️ Назад":
         bot.send_message(user_id, "Выберите тест", reply_markup=menu())

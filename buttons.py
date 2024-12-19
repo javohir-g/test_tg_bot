@@ -43,10 +43,12 @@ def exam_btns():
     button2 = KeyboardButton("Вариант 2")
     button3 = KeyboardButton("Вариант 3")
     button4 = KeyboardButton("Вариант 4")
-    button5 = KeyboardButton("⬅️ Назад")
+    button5 = KeyboardButton("Вариант 5")
+    button6 = KeyboardButton("⬅️ Назад")
     markup.add(button1, button2)
     markup.add(button3, button4)
     markup.add(button5)
+    markup.add(button6)
     return markup
 
 def exit_button():
