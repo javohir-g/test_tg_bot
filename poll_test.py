@@ -60,7 +60,19 @@ def handle_poll_answer(bot, answer, users, questions, send_result=True):
 # Завершение теста и возврат в меню
 def finish_test(bot, user_id, users, total_questions, send_result):
     score = users[user_id]["score"]
-    bot.send_message(user_id, f"Тест завершён! Ваш результат: {score}/{total_questions}.")
+    # Вычисляем результат в процентах
+    percentage = (score / total_questions) * 100
+
+    # Определяем, прошёл ли пользователь тест
+    if percentage >= 55:
+        result_message = f"Вы прошли тест! Ваш результат: {score}/{total_questions} ({percentage:.2f}%)."
+    else:
+        result_message = f"Вы не прошли тест. Ваш результат: {score}/{total_questions} ({percentage:.2f}%)."
+
+    # Отправляем результат
+    bot.send_message(user_id, f"Тест завершён! {result_message}")
+
+    # Сбрасываем данные пользователя
     users[user_id] = {"score": 0, "current_question": 0}
 
     # Возвращаемся к выбору теста
