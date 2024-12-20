@@ -87,12 +87,29 @@ def create_inline_keyboard_with_feedback(options, correct_answer=None, selected_
 
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
-regions = ["Ташкент", "Самарканд", "Бухара"]
+regions = [
+    "Andijon viloyati", "Buxoro viloyati", "Jizzax viloyati", "Qoraqalpog‘iston Respublikasi", "Qashqadaryo viloyati",
+    "Navoiy viloyati", "Namangan viloyati", "Samarqand viloyati", "Sirdaryo viloyati", "Surxondaryo viloyati",
+    "Toshkent viloyati", "Farg‘ona viloyati", "Xorazm viloyati", "Toshkent shahri"
+]
+
 learning_centers = {
-    "Ташкент": ["Центр 1", "Центр 2"],
-    "Самарканд": ["Центр 3", "Центр 4"],
-    "Бухара": ["Центр 5", "Центр 6"],
+    "Andijon viloyati": ["Markaz 1", "Markaz 2"],
+    "Buxoro viloyati": ["Markaz 5", "Markaz 6"],
+    "Jizzax viloyati": ["Markaz 1", "Markaz 2"],
+    "Qoraqalpog‘iston Respublikasi": ["Markaz 1", "Markaz 2"],
+    "Qashqadaryo viloyati": ["Markaz 1", "Markaz 2"],
+    "Navoiy viloyati": ["Markaz 1", "Markaz 2"],
+    "Namangan viloyati": ["Markaz 1", "Markaz 2"],
+    "Samarqand viloyati": ["Markaz 1", "Markaz 2"],
+    "Sirdaryo viloyati": ["Markaz 1", "Markaz 2"],
+    "Surxondaryo viloyati": ["Markaz 1", "Markaz 2"],
+    "Toshkent viloyati": ["Markaz 1", "Markaz 2"],
+    "Farg‘ona viloyati": ["Markaz 1", "Markaz 2"],
+    "Xorazm viloyati": ["Markaz 1", "Markaz 2"],
+    "Toshkent shahri": ["Markaz 1", "Markaz 2"]
 }
+
 
 def create_keyboard(options, request_contact=False):
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
