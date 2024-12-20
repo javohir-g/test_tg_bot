@@ -7,6 +7,7 @@ from telebot.types import Message
 from database import add_user, get_user
 
 ADMIN_CHAT_ID = -4705809842
+ADMIN_IDS = [947732542, 947732542]
 from keep_alive import keep_alive
 keep_alive()
 
@@ -250,9 +251,97 @@ def get_learning_center(message: Message):
     bot.send_message(ADMIN_CHAT_ID, application_text)
 
     # Завершаем регистрацию
-    bot.send_message(message.chat.id, "Arizangiz administratorga yuborildi.\nTez orada siz bilan bog‘lanadii")
+    bot.send_message(message.chat.id, "Arizangiz administratorga yuborildi.\nTez orada siz bilan bog‘lanadii", reply_markup=menu())
     users.pop(message.chat.id)
 
 
 
+
+
+def is_admin(user_id):
+    return user_id in ADMIN_IDS
+
+
+# Функция для создания и рассылки поста
+@bot.message_handler(commands=['create_post'])
+def create_post(message: Message):
+    user_id = message.from_user.id
+
+    # Проверяем, является ли пользователь администратором
+    if not is_admin(user_id):
+        bot.send_message(user_id, "У вас нет прав для создания поста.")
+        return
+
+    bot.send_message(user_id, "Введите текст для рассылки пользователям:")
+
+    # Регистрируем следующий шаг, чтобы получить текст поста от админа
+    bot.register_next_step_handler(message, get_post_content)
+
+
+# Функция для получения текста и фото от администратора
+def get_post_content(message: Message):
+    user_id = message.from_user.id
+    post_text = message.text  # Текст сообщения от администратора
+
+    # Создаем запись для пользователя в users, если ее нет
+    if user_id not in users:
+        users[user_id] = {}
+
+    # Запоминаем текст, который отправил админ
+    users[user_id]['post_text'] = post_text
+
+    bot.send_message(user_id,
+                     "Теперь отправьте фото для поста (или просто напишите 'пропустить', чтобы отправить только текст):")
+
+    # Регистрируем следующий шаг для получения фотографии
+    bot.register_next_step_handler(message, get_post_photo)
+
+
+# Функция для получения фото
+def get_post_photo(message: Message):
+    user_id = message.from_user.id
+
+    # Проверяем, если текст сообщения "пропустить"
+    if message.text and message.text.lower() == 'пропустить':
+        post_text = users[user_id].get('post_text', '')
+        send_post_to_users(post_text, None)
+        return
+
+    # Если сообщение содержит фото
+    if message.photo:
+        photo = message.photo[-1].file_id  # Получаем наилучшее качество фото
+        post_text = users[user_id].get('post_text', '')
+        send_post_to_users(post_text, photo)
+
+# Функция для отправки поста всем пользователям
+def send_post_to_users(post_text, photo):
+    # Отправляем пост всем зарегистрированным пользователям
+    for user in users:
+        try:
+            if photo:
+                # Отправка поста с фото
+                bot.send_photo(user, photo, caption=post_text)
+            else:
+                # Отправка только текста
+                bot.send_message(user, post_text)
+        except Exception as e:
+            print(f"Не удалось отправить сообщение пользователю {user}: {e}")
+
+    bot.send_message(ADMIN_IDS[0], "Пост успешно разослан всем пользователям.")
+
+# Функция для отправки поста всем пользователям
+def send_post_to_users(post_text, photo):
+    # Отправляем пост всем зарегистрированным пользователям
+    for user in users:
+        try:
+            if photo:
+                # Отправка поста с фото
+                bot.send_photo(user, photo, caption=post_text)
+            else:
+                # Отправка только текста
+                bot.send_message(user, post_text)
+        except Exception as e:
+            print(f"Не удалось отправить сообщение пользователю {user}: {e}")
+
+    bot.send_message(ADMIN_IDS[0], "Пост успешно разослан всем пользователям.")
 bot.polling(non_stop=True)
