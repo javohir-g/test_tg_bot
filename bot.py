@@ -6,8 +6,6 @@ from buttons import *
 from telebot.types import Message
 from database import add_user, get_user
 
-ADMIN_CHAT_ID = -4705809842
-ADMIN_IDS = [947732542, 43755394]
 from keep_alive import keep_alive
 keep_alive()
 
@@ -19,6 +17,8 @@ updater_thread.start()
 
 
 bot = telebot.TeleBot(token=os.environ.get('token'))
+ADMIN_CHAT_ID = -4797327083
+ADMIN_IDS = [947732542, 43755394]
 
 users = {}
 
