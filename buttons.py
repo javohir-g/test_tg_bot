@@ -83,3 +83,23 @@ def create_inline_keyboard_with_feedback(options, correct_answer=None, selected_
         keyboard.add(button)
 
     return keyboard
+
+
+from telebot.types import ReplyKeyboardMarkup, KeyboardButton
+
+regions = ["Ташкент", "Самарканд", "Бухара"]
+learning_centers = {
+    "Ташкент": ["Центр 1", "Центр 2"],
+    "Самарканд": ["Центр 3", "Центр 4"],
+    "Бухара": ["Центр 5", "Центр 6"],
+}
+
+def create_keyboard(options, request_contact=False):
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    for option in options:
+        if isinstance(option, list):
+            buttons = [KeyboardButton(text, request_contact=request_contact) for text in option]
+            keyboard.add(*buttons)
+        else:
+            keyboard.add(KeyboardButton(option))
+    return keyboard

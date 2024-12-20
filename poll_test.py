@@ -20,7 +20,7 @@ def create_poll(bot, user_id, questions, users, send_result=True):
         audio_path = question_data["audio"]
         try:
             with open(audio_path, 'rb') as audio:
-                bot.send_audio(user_id, audio, caption="Прослушайте и ответьте на вопрос:")
+                bot.send_audio(user_id, audio) # caption="Прослушайте и ответьте на вопрос:"
         except FileNotFoundError:
             bot.send_message(user_id, "Не удалось найти аудиофайл.")
 
@@ -65,9 +65,9 @@ def finish_test(bot, user_id, users, total_questions, send_result):
 
     # Определяем, прошёл ли пользователь тест
     if percentage >= 55:
-        result_message = f"Вы прошли тест! Ваш результат: {score}/{total_questions} ({percentage:.2f}%)."
+        result_message = f"\nВы прошли тест! Ваш результат: {score}/{total_questions} ({percentage:.2f}%)✅."
     else:
-        result_message = f"Вы не прошли тест. Ваш результат: {score}/{total_questions} ({percentage:.2f}%)."
+        result_message = f"\nВы не прошли тест. Ваш результат: {score}/{total_questions} ({percentage:.2f}%)❌."
 
     # Отправляем результат
     bot.send_message(user_id, f"Тест завершён! {result_message}")

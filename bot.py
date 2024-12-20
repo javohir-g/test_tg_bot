@@ -3,7 +3,9 @@ import os
 from poll_test import create_poll, handle_poll_answer
 from questions_list import *
 from buttons import *
+from telebot.types import Message
 
+ADMIN_CHAT_ID = -4705809842
 from keep_alive import keep_alive
 keep_alive()
 
@@ -14,10 +16,7 @@ updater_thread.daemon = True
 updater_thread.start()
 
 
-BOT_TOKEN = "7033133194:AAGjRf8UglWyUqr3W9Av1mHUnGynF1dPIoA"
-
-#bot = telebot.TeleBot(token=os.environ.get('token'))
-bot = telebot.TeleBot(BOT_TOKEN)
+bot = telebot.TeleBot(token=os.environ.get('token'))
 
 users = {}
 
@@ -64,7 +63,7 @@ def test_base1(message):
         with open(file_path, 'rb') as file:
             bot.send_document(message.chat.id, file)
 
-    bot.reply_to(message, "Все доступные учебные материалы отправлены.")
+    bot.send_message(message, "Все доступные учебные материалы отправлены.", reply_markup=exit_button())
 
 #---------------Банк тестов-------------------
 def test_base(message):
@@ -192,5 +191,74 @@ def main_menu(message):
     user_id = message.from_user.id
     bot.send_message(user_id, "Главное меню", reply_markup=menu())
 
+
+#-------------------------------------------
+@bot.message_handler(func=lambda message: message.text == "📝 Rus tili kursiga yozilish")
+def start_registration(message: Message):
+    users[message.chat.id] = {}
+    bot.send_message(message.chat.id, "Введите ваше ФИО:")
+    bot.register_next_step_handler(message, get_full_name)
+
+# Обработка ввода ФИО
+def get_full_name(message: Message):
+    users[message.chat.id]['full_name'] = message.text
+    keyboard = create_keyboard([["Отправить номер телефона"]], request_contact=True)
+    bot.send_message(message.chat.id, "Отправьте ваш номер телефона:", reply_markup=keyboard)
+    bot.register_next_step_handler(message, get_phone_number)
+
+# Обработка ввода номера телефона
+def get_phone_number(message: Message):
+    if message.contact:
+        phone_number = message.contact.phone_number
+    else:
+        phone_number = message.text
+
+    users[message.chat.id]['phone_number'] = phone_number
+    bot.send_message(message.chat.id, "Выберите ваш регион:", reply_markup=create_keyboard(regions + ["Назад"]))
+    bot.register_next_step_handler(message, get_region)
+
+# Обработка выбора региона
+def get_region(message: Message):
+    if message.text == "Назад":
+        bot.send_message(message.chat.id, "Главное меню :", reply_markup=menu())
+        return
+
+    if message.text not in regions:
+        bot.send_message(message.chat.id, "Пожалуйста, выберите регион из списка.")
+        bot.register_next_step_handler(message, get_region)
+        return
+
+    users[message.chat.id]['region'] = message.text
+    bot.send_message(message.chat.id, "Выберите учебный центр:", reply_markup=create_keyboard(learning_centers[message.text] + ["Назад"]))
+    bot.register_next_step_handler(message, get_learning_center)
+
+# Обработка выбора учебного центра
+def get_learning_center(message: Message):
+    if message.text == "Назад":
+        bot.send_message(message.chat.id, "Выберите ваш регион:", reply_markup=create_keyboard(regions + ["Назад"]))
+        bot.register_next_step_handler(message, get_region)
+        return
+
+    region = users[message.chat.id]['region']
+    if message.text not in learning_centers[region]:
+        bot.send_message(message.chat.id, "Пожалуйста, выберите учебный центр из списка.")
+        bot.register_next_step_handler(message, get_learning_center)
+        return
+
+    users[message.chat.id]['learning_center'] = message.text
+
+    # Отправляем данные админу
+    application_text = (
+        f"Новая заявка на курс Русского языка:\n\n"
+        f"ФИО: {users[message.chat.id]['full_name']}\n"
+        f"Телефон: {users[message.chat.id]['phone_number']}\n"
+        f"Регион: {users[message.chat.id]['region']}\n"
+        f"Учебный центр: {users[message.chat.id]['learning_center']}"
+    )
+    bot.send_message(ADMIN_CHAT_ID, application_text)
+
+    # Завершаем регистрацию
+    bot.send_message(message.chat.id, "Спасибо! Ваша заявка отправлена.", reply_markup=menu())
+    users.pop(message.chat.id)
 
 bot.polling(non_stop=True)
