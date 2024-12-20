@@ -4,6 +4,7 @@ from poll_test import create_poll, handle_poll_answer
 from questions_list import *
 from buttons import *
 from telebot.types import Message
+from database import add_user, get_user
 
 ADMIN_CHAT_ID = -4705809842
 from keep_alive import keep_alive
@@ -14,7 +15,6 @@ from threading import Thread
 updater_thread = Thread(target=schedule_updater)
 updater_thread.daemon = True
 updater_thread.start()
-
 
 bot = telebot.TeleBot(token=os.environ.get('token'))
 
@@ -29,30 +29,29 @@ def start(message):
     bot.send_message(user_id, "🇺🇿Salom. Iltimos, ismingizni yuboring.\n"
                               "------------\n"
                               "🇷🇺Здравствуйте. Пожалуйста, отправьте свое имя.")
-
     bot.register_next_step_handler(message, get_name)
 
 def get_name(message):
     user_id = message.from_user.id
     name = message.text
+    users[user_id] = {"name": name}  # Сохраняем имя
     bot.send_message(user_id, f"🇺🇿 {name} tanishganimdan xursandman. Raqamingizni yuboring\n"
-                              f"🇷🇺 {name} рад знакомству. Отправьте номер телефона.",reply_markup=phone_button_uz())
+                              f"🇷🇺 {name} рад знакомству. Отправьте номер телефона.", reply_markup=phone_button_uz())
     bot.register_next_step_handler(message, contact_handler, name)
 
 def contact_handler(message, name):
     user_id = message.from_user.id
     if message.contact:
         phone_number = message.contact.phone_number
+        users[user_id]["phone_number"] = phone_number  # Сохраняем номер телефона
+        add_user(user_id, name, phone_number)  # Добавляем пользователя в базу данных
         bot.send_message(user_id, "🇺🇿 Tizimda muvaffaqiyatli ro‘yxatdan o‘tdingiz! Pastdagi tugmalar orqali harakatni tanlang."
                                   "\n------------\n"
                                   "🇷🇺 Вы успешно зарегистрировались в системе! Выберите операцию ниже.", reply_markup=menu())
-        #db.add_user(name, phone_number, user_id)
-
     else:
         bot.send_message(user_id, "Raqamingizni pastdagi tugma orqali yuboring",
                          reply_markup=phone_button_uz())
-
-        bot.register_next_step_handler(message, test_base, name)
+        bot.register_next_step_handler(message, contact_handler, name)
 
 @bot.message_handler(func=lambda message: message.text == "📖 Учебные материалы")
 def test_base1(message):
@@ -192,35 +191,18 @@ def main_menu(message):
     bot.send_message(user_id, "Главное меню", reply_markup=menu())
 
 
-#-------------------------------------------
+#-----------"📝 Rus tili kursiga yozilish"-----------
 @bot.message_handler(func=lambda message: message.text == "📝 Rus tili kursiga yozilish")
 def start_registration(message: Message):
     users[message.chat.id] = {}
-    bot.send_message(message.chat.id, "Введите ваше ФИО:")
-    bot.register_next_step_handler(message, get_full_name)
-
-# Обработка ввода ФИО
-def get_full_name(message: Message):
-    users[message.chat.id]['full_name'] = message.text
-    keyboard = create_keyboard([["Отправить номер телефона"]], request_contact=True)
-    bot.send_message(message.chat.id, "Отправьте ваш номер телефона:", reply_markup=keyboard)
-    bot.register_next_step_handler(message, get_phone_number)
-
-# Обработка ввода номера телефона
-def get_phone_number(message: Message):
-    if message.contact:
-        phone_number = message.contact.phone_number
-    else:
-        phone_number = message.text
-
-    users[message.chat.id]['phone_number'] = phone_number
-    bot.send_message(message.chat.id, "Выберите ваш регион:", reply_markup=create_keyboard(regions + ["Назад"]))
+    bot.send_message(message.chat.id, "Выберите ваш регион:", reply_markup=create_keyboard(regions + ["⬅️ Orqaga"]))
     bot.register_next_step_handler(message, get_region)
 
 # Обработка выбора региона
 def get_region(message: Message):
-    if message.text == "Назад":
-        bot.send_message(message.chat.id, "Главное меню :", reply_markup=menu())
+    if message.text == "⬅️ Orqaga":
+        bot.send_message(message.chat.id, "Выберите ваш регион:", reply_markup=create_keyboard(regions + ["⬅️ Orqaga"]))
+        bot.register_next_step_handler(message, get_region)
         return
 
     if message.text not in regions:
@@ -229,36 +211,48 @@ def get_region(message: Message):
         return
 
     users[message.chat.id]['region'] = message.text
-    bot.send_message(message.chat.id, "Выберите учебный центр:", reply_markup=create_keyboard(learning_centers[message.text] + ["Назад"]))
+    bot.send_message(message.chat.id, "O‘quv markazini tanlang:", reply_markup=create_keyboard(learning_centers[message.text] + ["⬅️ Orqaga"]))
     bot.register_next_step_handler(message, get_learning_center)
 
 # Обработка выбора учебного центра
 def get_learning_center(message: Message):
-    if message.text == "Назад":
-        bot.send_message(message.chat.id, "Выберите ваш регион:", reply_markup=create_keyboard(regions + ["Назад"]))
+    if message.text == "Orqaga":
+        bot.send_message(message.chat.id, "Hududingizni tanlang:", reply_markup=create_keyboard(regions + ["Назад"]))
         bot.register_next_step_handler(message, get_region)
         return
 
     region = users[message.chat.id]['region']
     if message.text not in learning_centers[region]:
-        bot.send_message(message.chat.id, "Пожалуйста, выберите учебный центр из списка.")
+        bot.send_message(message.chat.id, "Iltimos, ro‘yxatdan markazini tanlang.")
         bot.register_next_step_handler(message, get_learning_center)
         return
 
     users[message.chat.id]['learning_center'] = message.text
 
-    # Отправляем данные админу
+    # Получаем данные пользователя из базы данных
+    user_data = get_user(message.chat.id)
+    if user_data:
+        name, phone_number = user_data
+    else:
+        name = "Не указано"
+        phone_number = "Не указан"
+
+    # Формируем текст заявки с данными из базы
     application_text = (
         f"Новая заявка на курс Русского языка:\n\n"
-        f"ФИО: {users[message.chat.id]['full_name']}\n"
-        f"Телефон: {users[message.chat.id]['phone_number']}\n"
+        f"Имя: {name}\n"
+        f"Номер телефона: {phone_number}\n"
         f"Регион: {users[message.chat.id]['region']}\n"
-        f"Учебный центр: {users[message.chat.id]['learning_center']}"
+        f"Центр: {users[message.chat.id]['learning_center']}"
     )
+
+    # Отправляем заявку администратору
     bot.send_message(ADMIN_CHAT_ID, application_text)
 
     # Завершаем регистрацию
-    bot.send_message(message.chat.id, "Спасибо! Ваша заявка отправлена.", reply_markup=menu())
+    bot.send_message(message.chat.id, "Arizangiz administratorga yuborildi.\nTez orada siz bilan bog‘lanadii")
     users.pop(message.chat.id)
+
+
 
 bot.polling(non_stop=True)

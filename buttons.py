@@ -94,20 +94,20 @@ regions = [
 ]
 
 learning_centers = {
-    "Andijon viloyati": ["Markaz 1", "Markaz 2"],
-    "Buxoro viloyati": ["Markaz 5", "Markaz 6"],
-    "Jizzax viloyati": ["Markaz 1", "Markaz 2"],
-    "Qoraqalpog‘iston Respublikasi": ["Markaz 1", "Markaz 2"],
-    "Qashqadaryo viloyati": ["Markaz 1", "Markaz 2"],
-    "Navoiy viloyati": ["Markaz 1", "Markaz 2"],
-    "Namangan viloyati": ["Markaz 1", "Markaz 2"],
-    "Samarqand viloyati": ["Markaz 1", "Markaz 2"],
-    "Sirdaryo viloyati": ["Markaz 1", "Markaz 2"],
-    "Surxondaryo viloyati": ["Markaz 1", "Markaz 2"],
-    "Toshkent viloyati": ["Markaz 1", "Markaz 2"],
-    "Farg‘ona viloyati": ["Markaz 1", "Markaz 2"],
-    "Xorazm viloyati": ["Markaz 1", "Markaz 2"],
-    "Toshkent shahri": ["Markaz 1", "Markaz 2"]
+    "Andijon viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Andijon shahri kasbiy ko‘nikmalar markazi"],
+    "Buxoro viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Buxoro shahri kasbiy ko‘nikmalar markazi"],
+    "Jizzax viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Jizzax shahri kasbiy ko‘nikmalar markazi"],
+    "Qoraqalpog‘iston Respublikasi": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Nukus shahri kasbiy ko‘nikmalar markazi"],
+    "Qashqadaryo viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Qarshi shahri kasbiy ko‘nikmalar markazi", "Ko‘kdala tumani kasbiy ko‘nikmalar markazi"],
+    "Navoiy viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Navoiy shahri kasbiy ko‘nikmalar markazi", "Nurota tumani kasbiy ko‘nikmalar markazi"],
+    "Namangan viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Namangan shahri kasbiy ko‘nikmalar markazi"],
+    "Samarqand viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Samarqand shahri kasbiy ko‘nikmalar markazi", "Kattaqo‘rg‘on shahri kasbiy ko‘nikmalar markazi"],
+    "Sirdaryo viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Guliston shahri kasbiy ko‘nikmalar markazi", "Sardoba tumani kasbiy ko‘nikmalar markazi"],
+    "Surxondaryo viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Angor tumani kasbiy ko‘nikmalar markazi", "Denov tumani kasbiy ko‘nikmalar markazi"],
+    "Toshkent viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Oqqo‘rg‘on tumani kasbiy ko‘nikmalar markazi", "Piskent tumani kasbiy ko‘nikmalar markazi"],
+    "Farg‘ona viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Farg‘ona shahri kasbiy ko‘nikmalar markazi", "Buvayda tumani kasbiy ko‘nikmalar markazi"],
+    "Xorazm viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Urganch shahri kasbiy ko‘nikmalar markazi"],
+    "Toshkent shahri": ["Toshkent shaxridagi Kasbiy kunikmalar markazining Uchtepa filiali", "Respublika kasbiy ko‘nikmalar markazi", "Uchtepa tumani kasbiy ko‘nikmalar markazi"]
 }
 
 
