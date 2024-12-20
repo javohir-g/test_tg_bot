@@ -7,7 +7,7 @@ from telebot.types import Message
 from database import add_user, get_user
 
 ADMIN_CHAT_ID = -4705809842
-ADMIN_IDS = [947732542, 947732542]
+ADMIN_IDS = [947732542, 43755394]
 from keep_alive import keep_alive
 keep_alive()
 
@@ -16,6 +16,7 @@ from threading import Thread
 updater_thread = Thread(target=schedule_updater)
 updater_thread.daemon = True
 updater_thread.start()
+
 
 bot = telebot.TeleBot(token=os.environ.get('token'))
 
@@ -54,16 +55,37 @@ def contact_handler(message, name):
                          reply_markup=phone_button_uz())
         bot.register_next_step_handler(message, contact_handler, name)
 
-@bot.message_handler(func=lambda message: message.text == "📖 Учебные материалы")
-def test_base1(message):
-    folder_path = "books"
-    pdf_files = [f for f in os.listdir(folder_path) if f.endswith('.pdf')]
-    for pdf_file in pdf_files:
-        file_path = os.path.join(folder_path, pdf_file)
-        with open(file_path, 'rb') as file:
-            bot.send_document(message.chat.id, file)
+@bot.message_handler(func=lambda message: message.text == "📖 O‘quv materiallari")
+def test_base2(message):
+    user_id = message.from_user.id
+    bot.send_message(user_id, "O‘quv materiallari", reply_markup=lessons_menu())
+    bot.register_next_step_handler(message, materials)
+
+@bot.message_handler(func=lambda message: message.text in ["▶️ Video materiallar", "📖 Darsliklar", "⬅️ Назад"])
+def materials(message):
+    user_id = message.from_user.id
+
+    if message.text == "📖 Darsliklar":
+        folder_path = "books"
+        pdf_files = [f for f in os.listdir(folder_path) if f.endswith('.pdf')]
+        for pdf_file in pdf_files:
+            file_path = os.path.join(folder_path, pdf_file)
+            with open(file_path, 'rb') as file:
+                bot.send_document(message.chat.id, file, reply_markup=menu())
+
+    elif message.text == "▶️ Video materiallar":
+        folder_path = "videos"
+        video_files = [f for f in os.listdir(folder_path) if f.endswith(('.mp4', '.avi', '.mov', '.mkv'))]
+        for video_file in video_files:
+            file_path = os.path.join(folder_path, video_file)
+            with open(file_path, 'rb') as file:
+                bot.send_video(message.chat.id, file, reply_markup=menu())
+
+    elif message.text == "⬅️ Назад":
+        bot.send_message(user_id, "Главное меню", reply_markup=menu())
 
     bot.send_message(message, "Все доступные учебные материалы отправлены.", reply_markup=exit_button())
+
 
 #---------------Банк тестов-------------------
 def test_base(message):
@@ -193,17 +215,20 @@ def main_menu(message):
 
 
 #-----------"📝 Rus tili kursiga yozilish"-----------
+# -----------"📝 Rus tili kursiga yozilish"-----------
 @bot.message_handler(func=lambda message: message.text == "📝 Rus tili kursiga yozilish")
 def start_registration(message: Message):
     users[message.chat.id] = {}
     bot.send_message(message.chat.id, "Выберите ваш регион:", reply_markup=create_keyboard(regions + ["⬅️ Orqaga"]))
     bot.register_next_step_handler(message, get_region)
 
-# Обработка выбора региона
+
+# Функция для обработки выбора региона
 def get_region(message: Message):
     if message.text == "⬅️ Orqaga":
-        bot.send_message(message.chat.id, "Выберите ваш регион:", reply_markup=create_keyboard(regions + ["⬅️ Orqaga"]))
-        bot.register_next_step_handler(message, get_region)
+        # Если пользователь нажал "⬅️ Orqaga", вернемся к главному меню
+        bot.send_message(message.chat.id, "Главное меню", reply_markup=menu())
+        bot.register_next_step_handler(message, main_menu)
         return
 
     if message.text not in regions:
@@ -212,33 +237,46 @@ def get_region(message: Message):
         return
 
     users[message.chat.id]['region'] = message.text
-    bot.send_message(message.chat.id, "O‘quv markazini tanlang:", reply_markup=create_keyboard(learning_centers[message.text] + ["⬅️ Orqaga"]))
+    send_learning_centers(message)
+
+
+# Функция для отправки списка учебных центров в зависимости от региона
+def send_learning_centers(message: Message):
+    region = users[message.chat.id]['region']
+    bot.send_message(message.chat.id, "O‘quv markazini tanlang:",
+                     reply_markup=create_keyboard(learning_centers[region] + ["⬅️ Orqaga"]))
     bot.register_next_step_handler(message, get_learning_center)
 
-# Обработка выбора учебного центра
+
+# Функция для обработки выбора учебного центра
 def get_learning_center(message: Message):
-    if message.text == "Orqaga":
-        bot.send_message(message.chat.id, "Hududingizni tanlang:", reply_markup=create_keyboard(regions + ["Назад"]))
+    if message.text == "⬅️ Orqaga":
+        # Если пользователь нажал "⬅️ Orqaga", вернемся к выбору региона
+        bot.send_message(message.chat.id, "Выберите ваш регион:", reply_markup=create_keyboard(regions + ["⬅️ Orqaga"]))
         bot.register_next_step_handler(message, get_region)
         return
 
     region = users[message.chat.id]['region']
+
     if message.text not in learning_centers[region]:
         bot.send_message(message.chat.id, "Iltimos, ro‘yxatdan markazini tanlang.")
         bot.register_next_step_handler(message, get_learning_center)
         return
 
     users[message.chat.id]['learning_center'] = message.text
+    send_application(message)
 
-    # Получаем данные пользователя из базы данных
+
+# Функция для формирования и отправки заявки
+def send_application(message: Message):
     user_data = get_user(message.chat.id)
+
     if user_data:
         name, phone_number = user_data
     else:
         name = "Не указано"
         phone_number = "Не указан"
 
-    # Формируем текст заявки с данными из базы
     application_text = (
         f"Новая заявка на курс Русского языка:\n\n"
         f"Имя: {name}\n"
@@ -247,15 +285,15 @@ def get_learning_center(message: Message):
         f"Центр: {users[message.chat.id]['learning_center']}"
     )
 
-    # Отправляем заявку администратору
     bot.send_message(ADMIN_CHAT_ID, application_text)
+    complete_registration(message)
 
-    # Завершаем регистрацию
-    bot.send_message(message.chat.id, "Arizangiz administratorga yuborildi.\nTez orada siz bilan bog‘lanadii", reply_markup=menu())
+
+# Завершение регистрации
+def complete_registration(message: Message):
+    bot.send_message(message.chat.id, "✅ Arizangiz muvaffaqiyatli yuborildi!\n\n🧑🏻‍💻 Kurs boshlanish vaqti haqida tez orada xabar yuboramiz yoki bog'lanamiz!",
+                     reply_markup=menu())
     users.pop(message.chat.id)
-
-
-
 
 
 def is_admin(user_id):
@@ -329,19 +367,4 @@ def send_post_to_users(post_text, photo):
 
     bot.send_message(ADMIN_IDS[0], "Пост успешно разослан всем пользователям.")
 
-# Функция для отправки поста всем пользователям
-def send_post_to_users(post_text, photo):
-    # Отправляем пост всем зарегистрированным пользователям
-    for user in users:
-        try:
-            if photo:
-                # Отправка поста с фото
-                bot.send_photo(user, photo, caption=post_text)
-            else:
-                # Отправка только текста
-                bot.send_message(user, post_text)
-        except Exception as e:
-            print(f"Не удалось отправить сообщение пользователю {user}: {e}")
-
-    bot.send_message(ADMIN_IDS[0], "Пост успешно разослан всем пользователям.")
 bot.polling(non_stop=True)

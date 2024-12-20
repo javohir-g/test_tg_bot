@@ -1,14 +1,24 @@
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+from telebot import types
 
 def menu():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     button1 = KeyboardButton("📚 Банк тестов")
     button2 = KeyboardButton("✅ Пробный экзамен")
-    button4 = KeyboardButton("📖 Учебные материалы")
+    button4 = KeyboardButton("📖 O‘quv materiallari")
     button3 = KeyboardButton("📝 Rus tili kursiga yozilish")
     markup.add(button1, button2)
     markup.add(button4)
     markup.add(button3)
+    return markup
+
+def lessons_menu():
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    button1 = KeyboardButton("▶️ Video materiallar")
+    button2 = KeyboardButton("📖 Darsliklar")
+    button4 = KeyboardButton("⬅️ Назад")
+    markup.add(button1, button2)
+    markup.add(button4)
     return markup
 
 def menu_test():
@@ -94,20 +104,20 @@ regions = [
 ]
 
 learning_centers = {
-    "Andijon viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Andijon shahri kasbiy ko‘nikmalar markazi"],
-    "Buxoro viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Buxoro shahri kasbiy ko‘nikmalar markazi"],
-    "Jizzax viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Jizzax shahri kasbiy ko‘nikmalar markazi"],
-    "Qoraqalpog‘iston Respublikasi": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Nukus shahri kasbiy ko‘nikmalar markazi"],
-    "Qashqadaryo viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Qarshi shahri kasbiy ko‘nikmalar markazi", "Ko‘kdala tumani kasbiy ko‘nikmalar markazi"],
-    "Navoiy viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Navoiy shahri kasbiy ko‘nikmalar markazi", "Nurota tumani kasbiy ko‘nikmalar markazi"],
-    "Namangan viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Namangan shahri kasbiy ko‘nikmalar markazi"],
-    "Samarqand viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Samarqand shahri kasbiy ko‘nikmalar markazi", "Kattaqo‘rg‘on shahri kasbiy ko‘nikmalar markazi"],
-    "Sirdaryo viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Guliston shahri kasbiy ko‘nikmalar markazi", "Sardoba tumani kasbiy ko‘nikmalar markazi"],
-    "Surxondaryo viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Angor tumani kasbiy ko‘nikmalar markazi", "Denov tumani kasbiy ko‘nikmalar markazi"],
-    "Toshkent viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Oqqo‘rg‘on tumani kasbiy ko‘nikmalar markazi", "Piskent tumani kasbiy ko‘nikmalar markazi"],
-    "Farg‘ona viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Farg‘ona shahri kasbiy ko‘nikmalar markazi", "Buvayda tumani kasbiy ko‘nikmalar markazi"],
-    "Xorazm viloyati": ["Kurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Urganch shahri kasbiy ko‘nikmalar markazi"],
-    "Toshkent shahri": ["Toshkent shaxridagi Kasbiy kunikmalar markazining Uchtepa filiali", "Respublika kasbiy ko‘nikmalar markazi", "Uchtepa tumani kasbiy ko‘nikmalar markazi"]
+    "Andijon viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Andijon shahri kasbiy ko‘nikmalar markazi"],
+    "Buxoro viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Buxoro shahri kasbiy ko‘nikmalar markazi"],
+    "Jizzax viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Jizzax shahri kasbiy ko‘nikmalar markazi"],
+    "Qoraqalpog‘iston Respublikasi": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Nukus shahri kasbiy ko‘nikmalar markazi"],
+    "Qashqadaryo viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Qarshi shahri kasbiy ko‘nikmalar markazi", "Ko‘kdala tumani kasbiy ko‘nikmalar markazi"],
+    "Navoiy viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Navoiy shahri kasbiy ko‘nikmalar markazi", "Nurota tumani kasbiy ko‘nikmalar markazi"],
+    "Namangan viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Namangan shahri kasbiy ko‘nikmalar markazi"],
+    "Samarqand viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Samarqand shahri kasbiy ko‘nikmalar markazi", "Kattaqo‘rg‘on shahri kasbiy ko‘nikmalar markazi"],
+    "Sirdaryo viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Guliston shahri kasbiy ko‘nikmalar markazi", "Sardoba tumani kasbiy ko‘nikmalar markazi"],
+    "Surxondaryo viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Angor tumani kasbiy ko‘nikmalar markazi", "Denov tumani kasbiy ko‘nikmalar markazi"],
+    "Toshkent viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Oqqo‘rg‘on tumani kasbiy ko‘nikmalar markazi", "Piskent tumani kasbiy ko‘nikmalar markazi"],
+    "Farg‘ona viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Farg‘ona shahri kasbiy ko‘nikmalar markazi", "Buvayda tumani kasbiy ko‘nikmalar markazi"],
+    "Xorazm viloyati": ["Qurilish soxasida malakali mutaxassislarni tayyorlash markazi", "Urganch shahri kasbiy ko‘nikmalar markazi"],
+    "Toshkent shahri": ["Respublika kasbiy ko‘nikmalar markazi"]
 }
 
 
@@ -120,3 +130,32 @@ def create_keyboard(options, request_contact=False):
         else:
             keyboard.add(KeyboardButton(option))
     return keyboard
+
+
+def create_main_menu():
+    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    item1 = types.KeyboardButton("📝 Rus tili kursiga yozilish")
+    markup.add(item1)
+    return markup
+
+# Кнопки для выбора региона
+def create_keyboard(options):
+    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    for option in options:
+        button = types.KeyboardButton(option)
+        markup.add(button)
+    return markup
+
+# Кнопки для возвращения на шаг назад
+def create_back_button():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    back_button = types.KeyboardButton("⬅️ Orqaga")
+    markup.add(back_button)
+    return markup
+
+# Кнопка подтверждения или завершения
+def create_finish_button():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    finish_button = types.KeyboardButton("✅ Yakunlash")
+    markup.add(finish_button)
+    return markup
