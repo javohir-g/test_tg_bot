@@ -1,12 +1,22 @@
 import telebot
+import os
 from poll_test import create_poll, handle_poll_answer
 from questions_list import *
 from buttons import *
 from telebot.types import Message
 from database import add_user, get_user
 
-token = "7033133194:AAGjRf8UglWyUqr3W9Av1mHUnGynF1dPIoA"
-bot = telebot.TeleBot(token)
+from keep_alive import keep_alive
+keep_alive()
+
+from request_to_site import schedule_updater
+from threading import Thread
+updater_thread = Thread(target=schedule_updater)
+updater_thread.daemon = True
+updater_thread.start()
+
+
+bot = telebot.TeleBot(token=os.environ.get('token'))
 ADMIN_CHAT_ID = -4797327083
 ADMIN_IDS = [947732542, 43755394]
 
