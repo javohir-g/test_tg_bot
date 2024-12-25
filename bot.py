@@ -1,14 +1,12 @@
 import telebot
-from dotenv import load_dotenv
-import os
 from poll_test import create_poll, handle_poll_answer
 from questions_list import *
 from buttons import *
 from telebot.types import Message
 from database import add_user, get_user
 
-load_dotenv()
-bot = telebot.TeleBot(token=os.environ.get('token'))
+token = "7033133194:AAGjRf8UglWyUqr3W9Av1mHUnGynF1dPIoA"
+bot = telebot.TeleBot(token)
 ADMIN_CHAT_ID = -4797327083
 ADMIN_IDS = [947732542, 43755394]
 
