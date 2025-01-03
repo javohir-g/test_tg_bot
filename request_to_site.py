@@ -5,7 +5,7 @@ import time
 
 def update_website():
     try:
-        response = requests.get("https://test-tg-bot-je8c.onrender.com")
+        response = requests.get("https://test-tg-bot-ctme.onrender.com")
         if response.status_code == 200:
             print("Сайт успешно обновлен")
         else:
